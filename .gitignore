@@ -14,5 +14,6 @@ publish/
 *.sln
 *.suo
 *.pfx
+*.bak
 XRFConfig/bin/
 XRFConfig/obj/
