@@ -1,0 +1,7 @@
+Publish the application from the solution
+
+Copy the new directory generated to ciseco.co.uk\downloads\xcm\application files
+
+Make sure you ONLY copy setup.exe and xcm.application to the next folder up (xcm)
+
+Leave the install.htm and publish.htm files ALONE
