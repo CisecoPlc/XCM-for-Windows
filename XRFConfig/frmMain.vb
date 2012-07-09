@@ -291,8 +291,17 @@ Public Class frmMain
         If OpenSerialPort() Then
             If EnterAtMode() Then
                 getdata("VR")
-                Dim s As String = lblVR.Text.Replace("B", "0")
-                XRFVersion = Convert.ToSingle(s, CultureInfo.GetCultureInfoByIetfLanguageTag("en-US").NumberFormat())
+                Dim split As Integer
+                Dim s As String = lblVR.Text
+                split = InStr(s, "B")
+                If split = -1 Then
+                    split = InStr(s, " ")
+                End If
+                If split <> -1 Then s = s.Substring(0, split - 1)
+                Try
+                    XRFVersion = Convert.ToSingle(s, CultureInfo.GetCultureInfoByIetfLanguageTag("en-US").NumberFormat())
+                Catch
+                End Try
                 getdata("NT")
                 If lblNT.Text <> "ERR" Then
                     NodeType = Convert.ToSingle(lblNT.Text, CultureInfo.GetCultureInfoByIetfLanguageTag("en-US").NumberFormat())

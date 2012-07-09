@@ -2331,12 +2331,13 @@ Partial Class frmMain
         '
         'Label89
         '
+        Me.Label89.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label89.AutoSize = True
         Me.Label89.Location = New System.Drawing.Point(649, 427)
         Me.Label89.Name = "Label89"
         Me.Label89.Size = New System.Drawing.Size(29, 13)
         Me.Label89.TabIndex = 76
-        Me.Label89.Text = "V1.3"
+        Me.Label89.Text = "V1.4"
         '
         'frmMain
         '
