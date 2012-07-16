@@ -294,10 +294,10 @@ Public Class frmMain
                 Dim split As Integer
                 Dim s As String = lblVR.Text
                 split = InStr(s, "B")
-                If split = -1 Then
+                If split = 0 Then
                     split = InStr(s, " ")
                 End If
-                If split <> -1 Then s = s.Substring(0, split - 1)
+                If split <> 0 Then s = s.Substring(0, split - 1)
                 Try
                     XRFVersion = Convert.ToSingle(s, CultureInfo.GetCultureInfoByIetfLanguageTag("en-US").NumberFormat())
                 Catch

@@ -2337,7 +2337,7 @@ Partial Class frmMain
         Me.Label89.Name = "Label89"
         Me.Label89.Size = New System.Drawing.Size(29, 13)
         Me.Label89.TabIndex = 76
-        Me.Label89.Text = "V1.4"
+        Me.Label89.Text = "V1.5"
         '
         'frmMain
         '
