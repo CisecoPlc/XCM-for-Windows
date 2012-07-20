@@ -20,29 +20,27 @@
     <TargetZone>LocalIntranet</TargetZone>
     <GenerateManifests>true</GenerateManifests>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <ManifestCertificateThumbprint>2BF9C20248254E8AD49DD070178080B88798EBE0</ManifestCertificateThumbprint>
     <ManifestKeyFile>XRFConfig_TemporaryKey.pfx</ManifestKeyFile>
     <SignManifests>true</SignManifests>
     <ApplicationIcon>IMG_3577.ico</ApplicationIcon>
-    <PublishUrl>S:\dropbox\My Dropbox\CC1111\dotNet\XRFConfig\publish\</PublishUrl>
+    <PublishUrl>C:\Users\JohnC_2\Documents\GitHub\XCM-for-Windows\publish\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Web</InstallFrom>
-    <UpdateEnabled>true</UpdateEnabled>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.ciseco.co.uk/downloads/XCM/</InstallUrl>
     <UpdateUrl>http://www.ciseco.co.uk/downloads/XCM/</UpdateUrl>
     <ProductName>XRFConfig</ProductName>
     <PublisherName>Ciseco Plc</PublisherName>
     <MinimumRequiredVersion>1.0.0.0</MinimumRequiredVersion>
-    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>9</ApplicationRevision>
+    <ApplicationRevision>10</ApplicationRevision>
     <ApplicationVersion>1.2.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
