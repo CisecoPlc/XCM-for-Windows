@@ -231,7 +231,7 @@ Public Class frmMain
         If lastWritten = "EA" And cmd = "EK" Then
             getdata(cmd)
         End If
-        If cmd = "BD" Or cmd = "RO" Then
+        If cmd = "BD" Or cmd = "RO" And s <> "" Then
             If Convert.ToInt32(s, 16) = Convert.ToInt32(conTxt(0).Text, 16) Then
                 Exit Sub 'as they are the same there is nothing to do
             End If

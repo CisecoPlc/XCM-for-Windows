@@ -14,5 +14,6 @@
 *.suo
 *.pfx
 *.bak
-XRFConfig/bin/Debug
+XRFConfig/bin/
 XRFConfig/obj/
+publish/
