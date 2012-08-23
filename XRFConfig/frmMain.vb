@@ -134,7 +134,18 @@ Public Class frmMain
     Private Function EnterAtMode() As Boolean
         Dim c As Char
         OpenSerialPort()
+        delay(1500)
+        com1.Write(txtGuard.Text)
+        com1.Write(txtGuard.Text)
+        com1.Write(txtGuard.Text)
         delay(1200)
+        While c <> Microsoft.VisualBasic.ChrW(1) ' this copes with streaming data coming in
+            c = ReceiveSerialData(100)        ' throw away anything in the buffer
+        End While
+        com1.Write("AT" & vbCr)     ' now confirm we are in at mode
+        If waitForOK(False) Then Return True
+        addToTextbox("Failed to enter AT mode - trying again")
+        delay(1500)
         com1.Write(txtGuard.Text)
         com1.Write(txtGuard.Text)
         com1.Write(txtGuard.Text)
@@ -157,7 +168,7 @@ Public Class frmMain
         End While
     End Sub
 
-    Private Function waitForOK() As Boolean
+    Private Function waitForOK(Optional ByVal bError As Boolean = True) As Boolean
         Dim c As Char
         Dim s As String = ""
         'addToTextbox("waitforok")
@@ -174,7 +185,9 @@ Public Class frmMain
                 End If
             End If
             If c = Microsoft.VisualBasic.ChrW(1) Then
-                outputError("No valid response received")
+                If bError Then
+                    outputError("No valid response received")
+                End If
                 'com1.Close()        ' close the com port
                 'addToTextbox(s)
                 Return False
@@ -189,7 +202,7 @@ Public Class frmMain
         Dim c As Char = " "
         com1.Write("AT" & cmd & vbCr)
         While True
-            c = ReceiveSerialData(100)
+            c = ReceiveSerialData(50)
             If c = vbCr Then
                 Exit While
             ElseIf c = Microsoft.VisualBasic.ChrW(1) Then
@@ -202,13 +215,14 @@ Public Class frmMain
                 s = s + c
             End If
         End While
-        waitForOK()
+        waitForOK(False)
         Return s
     End Function
 
     Private Sub getdata(ByVal cmd As String)
         addToTextbox("Reading AT" & cmd)
         Dim s As String = readData(cmd)
+        If s = "ERR" Then s = "N/A"
         Dim con() As Control
         con = Me.Controls.Find("lbl" & cmd, True)
         con(0).Text = s
@@ -226,12 +240,13 @@ Public Class frmMain
         Dim conTxt() As Control
 
         s = readData(cmd)
+        If s = "ERR" Then Exit Sub
         conLbl = Me.Controls.Find("lbl" & cmd, True)
         conTxt = Me.Controls.Find("txt" & cmd, True)
         If lastWritten = "EA" And cmd = "EK" Then
             getdata(cmd)
         End If
-        If cmd = "BD" Or cmd = "RO" And s <> "" Then
+        If cmd = "BD" Or cmd = "RO" And s <> "" And IsNumeric(s) Then
             If Convert.ToInt32(s, 16) = Convert.ToInt32(conTxt(0).Text, 16) Then
                 Exit Sub 'as they are the same there is nothing to do
             End If
@@ -242,7 +257,7 @@ Public Class frmMain
         com1.Write("AT" & cmd & " " & conTxt(0).Text & vbCr)
         lastWritten = cmd
         addToTextbox("Writing AT" & cmd)
-        If waitForOK() Then
+        If waitForOK(False) Then
             com1.Write("AT" & cmd & vbCr)
             s = ""
             While True
@@ -265,7 +280,7 @@ Public Class frmMain
                     If s.Substring(0, conTxt(0).Text.Length) <> conTxt(0).Text Then
                         outputError("response is not the same")
                     End If
-                ElseIf cmd = "BD" Or cmd = "RO" Then
+                ElseIf cmd = "BD" Or cmd = "RO" And IsNumeric(s) Then
                     If Convert.ToInt32(s, 16) <> Convert.ToInt32(conTxt(0).Text, 16) Then
                         outputError("response is not the same")
                     End If
@@ -303,13 +318,13 @@ Public Class frmMain
                 Catch
                 End Try
                 getdata("NT")
-                If lblNT.Text <> "ERR" Then
+                If lblNT.Text <> "N/A" And IsNumeric(lblNT.Text) Then
                     NodeType = Convert.ToSingle(lblNT.Text, CultureInfo.GetCultureInfoByIetfLanguageTag("en-US").NumberFormat())
                 Else
                     NodeType = 8
                 End If
                 getdata("BD")
-                If lblBD.Text = "ERR" Then  ' usb version
+                If lblBD.Text = "N/A" Then  ' usb version
                     outputError("")
                     bUSBVersion = True
                     gboxSerial.Text = "Serial, sleep and flow control - not valid as this is a USB device"
@@ -832,7 +847,13 @@ Public Class frmMain
         Dim cmd As String = ""
         Dim bVersion2 As Boolean = False
         Dim bVersion3 As Boolean = False
-        com1.Write("~Y")       ' request version number (version 2 - ~ enters bootloader)
+
+        com1.Write("~")     ' tell the bootloader to enter bootloader mode
+        c = ReceiveSerialData(50)  'throw away anything in the buffer from the reset
+        While c <> Microsoft.VisualBasic.ChrW(1)
+            c = ReceiveSerialData(50)  '
+        End While
+        com1.Write("Y")       ' request version number (version 2 - ~ enters bootloader)
         c = ReceiveSerialData(400) ' should get cmd echoed rapidly
         If c = "2" Then
             bVersion2 = True
