@@ -3,7 +3,7 @@ XCM-for-Windows
 
 XRF configurations and firmware upgrade tool
 
-Developed using MS Visual Studio 2008
+Developed using MS Visual Studio 2013
 
 You will need to generate a certificate in order to build this code
 Project->options
