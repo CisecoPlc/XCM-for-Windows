@@ -1,4 +1,24 @@
-﻿Imports System.Globalization
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' Permission is hereby granted, free of charge, to any person obtaining
+' a copy of this software and associated documentation files (the
+' "Software"), to deal in the Software without restriction, including
+' without limitation the rights to use, copy, modify, merge, publish,
+' distribute, sublicense, and/or sell copies of the Software, and to
+' permit persons to whom the Software is furnished to do so, subject to
+' the following conditions:
+'
+' The above copyright notice and this permission notice shall be
+' included in all copies or substantial portions of the Software.
+'
+' THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+' EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+' MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+' NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+' LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+' OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+' WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Imports System.Globalization
 
 Public Class frmMain
     Dim com1 As IO.Ports.SerialPort
@@ -764,17 +784,24 @@ Public Class frmMain
 
                 Do While Not sr.EndOfStream
                     strIn = sr.ReadLine()       ' get next line
-                    If strIn.Length <> 67 Then
-                        ret = -4    ' ensure correct size
-                        Exit Do
-                    End If
-                    For i = 0 To 66
-                        Dim c = strIn.Chars(i)  ' validate all chars
-                        If c < ";" Or c > "z" Then
-                            ret = -5
+                    If strIn.StartsWith(";Bootloader4") Then
+                        ret = 4
+                    Else
+                        If strIn.Length <> 67 Then
+                            If sr.EndOfStream And strIn.StartsWith(Chr(26)) Then
+                                Exit Do
+                            End If
+                            ret = -4    ' ensure correct size
                             Exit Do
                         End If
-                    Next
+                        For i = 0 To 66
+                            Dim c = strIn.Chars(i)  ' validate all chars
+                            If c < ";" Or c > "z" Then
+                                ret = -5
+                                Exit Do
+                            End If
+                        Next
+                    End If
                 Loop
                 sr.Close()
             Catch
@@ -827,8 +854,8 @@ Public Class frmMain
         End If
         If rbtnXRF.Checked Then      ' we need to put it into program mode
             If Not EnterAtMode() Then
-                com1.Close()        ' close the com port
-                Return
+                'com1.Close()        ' close the com port
+                GoTo BOOTLOADERMODE
             End If
             com1.Write("ATPG" & vbCr)
             If Not waitForOK() Then
@@ -837,7 +864,7 @@ Public Class frmMain
             End If
             addToTextbox("Entered programming mode")
         End If
-
+BOOTLOADERMODE:
         outputError("")     ' clear any existing error
         If cmbBaudRate.Text <> "9600" Then
             com1.BaudRate = 9600    ' force 9600
@@ -845,25 +872,32 @@ Public Class frmMain
         End If
         delay(70)         ' 50 ticks should be enough for a reset
         Dim cmd As String = ""
-        Dim bVersion2 As Boolean = False
-        Dim bVersion3 As Boolean = False
-
+        Dim BootType As Integer = 0
+        Dim bootCount As Integer = 0
+tryAgain:
         com1.Write("~")     ' tell the bootloader to enter bootloader mode
-        c = ReceiveSerialData(50)  'throw away anything in the buffer from the reset
+        c = ReceiveSerialData(5)  'throw away anything in the buffer from the reset
         While c <> Microsoft.VisualBasic.ChrW(1)
-            c = ReceiveSerialData(50)  '
+            c = ReceiveSerialData(5)  '
         End While
         com1.Write("Y")       ' request version number (version 2 - ~ enters bootloader)
-        c = ReceiveSerialData(400) ' should get cmd echoed rapidly
+        c = ReceiveSerialData(160) ' should get cmd echoed rapidly, if not may be LLAP2
+        bootCount = bootCount + 1
+        If c = Microsoft.VisualBasic.ChrW(1) And bootCount = 1 Then GoTo tryAgain ' once only
         If c = "2" Then
-            bVersion2 = True
+            BootType = 2
             rbtnXRF.Checked = False
             rbtnBOOT.Checked = True
         ElseIf c = "3" Then
-            bVersion3 = True
+            BootType = 3
+            rbtnXRF.Checked = False
+            rbtnBOOT.Checked = True
+        ElseIf c = "4" Then
+            BootType = 4
             rbtnXRF.Checked = False
             rbtnBOOT.Checked = True
         ElseIf c = "~" Then      ' need to flush characters as this is V1
+            BootType = 1
             cmd = c
             While c <> Microsoft.VisualBasic.ChrW(1)
                 c = ReceiveSerialData(200)  'flush RYR
@@ -873,6 +907,7 @@ Public Class frmMain
                 addToTextbox("Response received:" + cmd)
             End If
         Else
+            BootType = 1
             cmd = c
             While c <> Microsoft.VisualBasic.ChrW(1)
                 c = ReceiveSerialData(200)  'flush RYR
@@ -884,8 +919,8 @@ Public Class frmMain
                 Return
             End If
         End If
-        If (bVersion2 And (Filetype > 2)) Or (bVersion3 And (Filetype <> 3)) Then
-            outputError("Error - file is the wrong hex version")
+        If (BootType <> Filetype) Then
+            outputError("Error - file is for bootloader version " & Filetype & ", device is bootloader version " & BootType & ".")
             com1.Close()        ' close the com port
             Return
         End If
@@ -964,6 +999,10 @@ Public Class frmMain
 
         strIn = sr.ReadLine()       ' get first line
         ProgressBar1.Value += 1
+        If Filetype = 4 Then        ' skip first line for type 4
+            strIn = sr.ReadLine()       ' get next line
+            ProgressBar1.Value += 1
+        End If
 
         Do While c = "R" And strIn <> ""    ' while Device is ready and there is something to send
             com1.Write(strIn)       ' send the line to the Device
@@ -981,6 +1020,13 @@ Public Class frmMain
                     End If
                 Else
                     strIn = sr.ReadLine()       ' get next line
+                    If sr.EndOfStream And strIn.StartsWith(Chr(26)) Then
+                        strIn = ""
+                        c = ReceiveSerialData(1000)     ' grab the 'R'
+                        If c <> "R" Then
+                            Exit Do ' if it is not a 'R' get out
+                        End If
+                    End If
                     ProgressBar1.Value += 1  'bump the progress pointer
                 End If
             ElseIf c = "N" Then         ' data not received OK - serial line corruption

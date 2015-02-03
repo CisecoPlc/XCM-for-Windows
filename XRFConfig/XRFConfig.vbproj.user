@@ -1,7 +1,8 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <PropertyGroup>
-    <PublishUrlHistory>C:\Users\JohnC_2\Documents\GitHub\XCM-for-Windows\publish\|S:\dropbox\My Dropbox\CC1111\dotNet\XRFConfig\publish\|C:\Documents and Settings\Administrator\Desktop\polisher\|ftp://www.ciseco.co.uk/</PublishUrlHistory>
-    <InstallUrlHistory>http://www.ciseco.co.uk/downloads/XCM/</InstallUrlHistory>
+    <PublishUrlHistory>C:\Users\johnc\Documents\Visual Studio 2013\Projects\XCM-for-Windows\publish\|C:\Users\JohnC_2\Documents\GitHub\XCM-for-Windows\publish\|S:\dropbox\My Dropbox\CC1111\dotNet\XRFConfig\publish\|C:\Documents and Settings\Administrator\Desktop\polisher\|ftp://www.ciseco.co.uk/</PublishUrlHistory>
+    <InstallUrlHistory>http://www.ciseco.co.uk/xcm/|http://www/ciseco.co.uk/xcm/|http://www.ciseco.co.uk/downloads/XCM/</InstallUrlHistory>
     <SupportUrlHistory>
     </SupportUrlHistory>
     <UpdateUrlHistory>http://www.ciseco.co.uk/downloads/XCM/</UpdateUrlHistory>

@@ -1,7 +1,7 @@
 XCM-for-Windows
 ===============
 
-XRF configurations and firware upgrade tool
+XRF configurations and firmware upgrade tool
 
 Developed using MS Visual Studio 2008
 
