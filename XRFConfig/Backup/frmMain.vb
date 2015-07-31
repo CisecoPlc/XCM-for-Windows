@@ -106,20 +106,17 @@ Public Class frmMain
     End Sub
 
     Sub GetSerialPortNames()
-        Dim TempString As String
-        Dim c As String
+        'Dim TempString As String
         ' Show all available COM ports.
         PortChooser.Items.Clear()
         PortChooser.Items.Add("")
         For Each sp As String In My.Computer.Ports.SerialPortNames
-            TempString = sp
-            c = Microsoft.VisualBasic.Right(TempString, 1)
-            While Microsoft.VisualBasic.Len(TempString) > 1 And (c < "0" Or c > "9")
-                TempString = Microsoft.VisualBasic.Left(TempString, Microsoft.VisualBasic.Len(TempString) - 1)
-                '    TempString = "COM0" + TempString
-                c = Microsoft.VisualBasic.Right(TempString, 1)
-            End While
-            sp = TempString
+            'TempString = sp
+            'If Len(TempString) = 4 Then
+            '    TempString = Microsoft.VisualBasic.Right(TempString, 1)
+            '    TempString = "COM0" + TempString
+            'End If
+            'sp = TempString
             PortChooser.Items.Add(sp)
         Next
     End Sub
@@ -875,18 +872,15 @@ BOOTLOADERMODE:
         End If
         delay(70)         ' 50 ticks should be enough for a reset
         Dim cmd As String = ""
-        Dim BootType As Integer = 0
-        Dim bootCount As Integer = 0
-tryAgain:
+        Dim BootType As Integer = False
+
         com1.Write("~")     ' tell the bootloader to enter bootloader mode
-        c = ReceiveSerialData(5)  'throw away anything in the buffer from the reset
+        c = ReceiveSerialData(50)  'throw away anything in the buffer from the reset
         While c <> Microsoft.VisualBasic.ChrW(1)
-            c = ReceiveSerialData(5)  '
+            c = ReceiveSerialData(50)  '
         End While
         com1.Write("Y")       ' request version number (version 2 - ~ enters bootloader)
-        c = ReceiveSerialData(160) ' should get cmd echoed rapidly, if not may be LLAP2
-        bootCount = bootCount + 1
-        If c = Microsoft.VisualBasic.ChrW(1) And bootCount = 1 Then GoTo tryAgain ' once only
+        c = ReceiveSerialData(400) ' should get cmd echoed rapidly
         If c = "2" Then
             BootType = 2
             rbtnXRF.Checked = False
