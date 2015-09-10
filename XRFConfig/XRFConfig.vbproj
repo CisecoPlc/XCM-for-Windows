@@ -21,8 +21,8 @@
     <GenerateManifests>true</GenerateManifests>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <ManifestCertificateThumbprint>A342397557E171CEA86453531F6064A6216F8C5D</ManifestCertificateThumbprint>
-    <ManifestKeyFile>XRFConfig_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestCertificateThumbprint>EA520034958C1199A16C889502854A5A53EBC23E</ManifestCertificateThumbprint>
+    <ManifestKeyFile>XRFConfig_2_TemporaryKey.pfx</ManifestKeyFile>
     <SignManifests>true</SignManifests>
     <ApplicationIcon>IMG_3577.ico</ApplicationIcon>
     <FileUpgradeFlags>
@@ -40,14 +40,15 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.ciseco.co.uk/xcm/</InstallUrl>
+    <InstallUrl>http://www.ciseco.co.uk/downloads/XCM/</InstallUrl>
     <UpdateUrl>http://www.ciseco.co.uk/downloads/XCM/</UpdateUrl>
     <ProductName>XRFConfig</ProductName>
     <PublisherName>Ciseco Plc</PublisherName>
     <MinimumRequiredVersion>1.0.0.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>6</ApplicationRevision>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <ApplicationRevision>8</ApplicationRevision>
     <ApplicationVersion>1.6.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -156,6 +157,7 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="XRFConfig_1_TemporaryKey.pfx" />
+    <None Include="XRFConfig_2_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

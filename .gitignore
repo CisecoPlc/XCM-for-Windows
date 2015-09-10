@@ -10,10 +10,12 @@
 #ignore directory
 #dir/
 
+XRFConfig/bin/
+XRFConfig/obj/
+publish/
+save/
 *.sln
 *.suo
 *.pfx
 *.bak
-XRFConfig/bin/
-XRFConfig/obj/
-publish/
+
